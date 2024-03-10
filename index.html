@@ -84,6 +84,17 @@
                 } else {
                     info.style.display = 'none';
                 }
+            });
+        });
+    </script>
+</body>
+</html>
+
+<script>
+    document.addEventListener('contextmenu', function(event) {
+        event.preventDefault();
+    });
+</script>
 
 
 <!DOCTYPE html>
@@ -94,6 +105,7 @@
     <title>TusufsWeb</title>
     <style>
         /* CSS */
+        /* Bu alanda CSS kodlarınızı ekleyebilirsiniz */
         footer {
             background-color: #333;
             color: #fff;
@@ -104,11 +116,12 @@
             width: 100%;
         }
         #browser {
-            font-size: 12px; 
+            font-size: 12px; /* Yazı boyutunu küçültmek için */
         }
     </style>
 </head>
 <body>
+    <!-- Sayfa içeriği buraya gelecek -->
 
     <footer id="footer">
         Made by Tusuf / Browser: <span id="browser"></span>
@@ -116,12 +129,9 @@
 
     <script>
         // JavaScript
+        // Tarayıcı bilgisini alma ve yazdırma
         document.getElementById("browser").textContent = navigator.userAgent;
     </script>
 </body>
 </html>
-            });
-        });
-    </script>
-</body>
-</html>
+
