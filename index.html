@@ -49,6 +49,18 @@
         }
         .info {
             display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .info-show {
+            animation: fadeOut 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeOut {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-20px); }
         }
     </style>
 </head>
@@ -58,14 +70,14 @@
     </header>
     <div class="container">
         <div class="file">
-            <h2>File Name 1</h2>
-            <p>File Description 1. Some details about this file...</p>
+            <h2>i93s.exe</h2>
+            <p>A MALWARE that deletes important system files, then replicates itself and wipes the C:/ drive. DO NOT open this software on your real computer (VMware, Virtualbox, Hyper-V recommended). The producer is not responsible for any damage caused by i93s.exe.</p>
             <button class="info-btn">Info</button>
             <div class="info">
                 <p>Information about this file:</p>
                 <ul>
-                    <li>System requirements: ...</li>
-                    <li>Release date: ...</li>
+                    <li>System requirements: Windows Vista and higher</li>
+                    <li>Release date: Sunday, March 10, 2024</li>
                     <!-- Other information can be added here -->
                 </ul>
             </div>
@@ -82,56 +94,14 @@
                 if (info.style.display === 'none') {
                     info.style.display = 'block';
                 } else {
-                    info.style.display = 'none';
+                    info.classList.add('info-show');
+                    setTimeout(function() {
+                        info.style.display = 'none';
+                        info.classList.remove('info-show');
+                    }, 500); // 500ms duration
                 }
             });
         });
     </script>
 </body>
 </html>
-
-<script>
-    document.addEventListener('contextmenu', function(event) {
-        event.preventDefault();
-    });
-</script>
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TusufsWeb</title>
-    <style>
-        /* CSS */
-        /* Bu alanda CSS kodlarınızı ekleyebilirsiniz */
-        footer {
-            background-color: #333;
-            color: #fff;
-            padding: 10px;
-            text-align: center;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
-        #browser {
-            font-size: 12px; /* Yazı boyutunu küçültmek için */
-        }
-    </style>
-</head>
-<body>
-    <!-- Sayfa içeriği buraya gelecek -->
-
-    <footer id="footer">
-        Made by Tusuf / Browser: <span id="browser"></span>
-    </footer>
-
-    <script>
-        // JavaScript
-        // Tarayıcı bilgisini alma ve yazdırma
-        document.getElementById("browser").textContent = navigator.userAgent;
-    </script>
-</body>
-</html>
-
