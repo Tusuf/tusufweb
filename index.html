@@ -84,6 +84,42 @@
                 } else {
                     info.style.display = 'none';
                 }
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TusufsWeb</title>
+    <style>
+        /* CSS */
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        #browser {
+            font-size: 12px; 
+        }
+    </style>
+</head>
+<body>
+
+    <footer id="footer">
+        Made by Tusuf / Browser: <span id="browser"></span>
+    </footer>
+
+    <script>
+        // JavaScript
+        document.getElementById("browser").textContent = navigator.userAgent;
+    </script>
+</body>
+</html>
             });
         });
     </script>
