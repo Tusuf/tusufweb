@@ -105,3 +105,53 @@
     </script>
 </body>
 </html>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Agent and IP Information</title>
+<style>
+   #userInfo {
+      font-size: 12px;
+      text-align: center;
+      margin-top: 20px;
+      animation: fadeIn 2s ease forwards;
+   }
+
+   @keyframes fadeIn {
+      from {
+         opacity: 0;
+         transform: translateY(-20px);
+      }
+      to {
+         opacity: 1;
+         transform: translateY(0);
+      }
+   }
+</style>
+</head>
+<body>
+<footer id="userInfo">
+   <div>User Agent Information: <span id="userAgentText"></span></div>
+   <div>IP Address: <span id="ipAddressText"></span></div>
+</footer>
+
+<script>
+   document.getElementById("userAgentText").innerText = navigator.userAgent;
+
+   // A request is being made to get the user IP address
+   fetch('https://api.ipify.org?format=json')
+      .then(response => response.json())
+      .then(data => {
+         document.getElementById("ipAddressText").innerText = data.ip;
+      })
+      .catch(error => {
+         console.error('IP error:', error);
+         document.getElementById("ipAddressText").innerText = "Error occurred.";
+      });
+</script>
+</body>
+</html>
