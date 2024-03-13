@@ -51,6 +51,21 @@
         .container.active {
             display: block;
         }
+        .admin-panel {
+            margin-top: 20px;
+            border-top: 2px solid #333;
+            padding-top: 20px;
+        }
+        .admin-panel h2 {
+            text-align: center;
+        }
+        .user-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .user-list li {
+            margin-bottom: 10px;
+        }
         .file {
             margin-bottom: 20px;
             background-color: #f9f9f9;
@@ -106,6 +121,7 @@
             <ul>
                 <li><a href="#home">Home</a></li>
                 <li><a href="#applications">Applications</a></li>
+                <li id="adminLink" style="display: none;"><a href="#admin">Admin Panel</a></li>
             </ul>
             <div class="auth-buttons">
                 <button onclick="showForm('login');">Login</button>
@@ -115,18 +131,6 @@
     </header>
     <div class="container active" id="home">
         <h2>Welcome to TusufsWeb!</h2>
-        <div id="updates">
-            <h3>Updates</h3>
-            <ul>
-                <li>
-                    <strong>March 10, 2024:</strong> Added new feature X.
-                </li>
-                <li>
-                    <strong>March 5, 2024:</strong> Fixed issue Y.
-                </li>
-                <!-- Diğer güncelleme loglarını buraya ekleyin -->
-            </ul>
-        </div>
     </div>
     <div class="container" id="applications">
         <h2>Applications</h2>
@@ -151,12 +155,19 @@
             <div class="info">
                 <p>Information about File 2:</p>
                 <ul>
-                    <li>System requirements: macOS 11</li>
-                    <li>Release date: March 5, 2024</li>
+                    <li>System requirements: macOS Big Sur</li>
+                    <li>Release date: March 1, 2024</li>
                     <!-- Other information can be added here -->
                 </ul>
             </div>
             <a href="#" download>Download</a>
+        </div>
+        <!-- Other files can be added here -->
+    </div>
+    <div class="container" id="admin" style="display: none;">
+        <div class="admin-panel">
+            <h2>Admin Panel</h2>
+            <ul class="user-list" id="userList"></ul>
         </div>
     </div>
     <div class="container" id="login">
@@ -167,7 +178,6 @@
             <label for="password">Password:</label><br>
             <input type="password" id="loginPassword" name="password"><br><br>
             <button type="submit">Login</button>
-            <div id="loginErrorMessage" class="error-message" style="display: none;"></div>
         </form>
     </div>
     <div class="container" id="signup">
@@ -178,14 +188,16 @@
             <label for="email">Email:</label><br>
             <input type="text" id="signupEmail" name="email"><br><br>
             <label for="password">Password:</label><br>
-            <input type="password" id="signupPassword" name="password"><br><br>
+            <input type="password" id="signupPassword" name="password" required minlength="8"><br><br>
             <button type="submit">Sign up</button>
-            <div id="signupErrorMessage" class="error-message" style="display: none;"></div>
+            <div id="errorMessage" class="error-message" style="display: none;"></div>
         </form>
     </div>
 
     <script>
         // JavaScript
+        var users = JSON.parse(localStorage.getItem('users')) || [];
+
         function showForm(formId) {
             var forms = document.querySelectorAll('.container');
             forms.forEach(function(form) {
@@ -195,12 +207,88 @@
         }
 
         function validateLogin() {
-            // Validation logic for login form
+            var email = document.getElementById('loginEmail').value.trim();
+            var password = document.getElementById('loginPassword').value.trim();
+            var currentUser = users.find(function(user) {
+                return user.email === email && user.password === password;
+            });
+            if (!currentUser) {
+                alert('Invalid email or password.');
+                return false;
+            }
+            if (currentUser.email === 'lornapes@duck.com') {
+                document.getElementById('adminLink').style.display = 'inline';
+            }
             return true;
         }
 
+        window.onload = function() {
+            var containers = document.querySelectorAll('.container');
+            document.querySelectorAll('nav ul li a').forEach(function(link) {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    containers.forEach(function(container) {
+                        container.classList.remove('active');
+                    });
+                    var targetId = this.getAttribute('href').substring(1);
+                    document.getElementById(targetId).classList.add('active');
+                    if (targetId === 'admin') {
+                        displayUserList();
+                    }
+                });
+            });
+        }
+
+        function displayUserList() {
+            var userList = document.getElementById('userList');
+            userList.innerHTML = '';
+            users.forEach(function(user) {
+                var listItem = document.createElement('li');
+                listItem.textContent = 'Name: ' + user.name + ', Email: ' + user.email;
+                userList.appendChild(listItem);
+            });
+        }
+
         function validateSignup() {
-            // Validation logic for signup form
+            var name = document.getElementById('signupName').value.trim();
+            var email = document.getElementById('signupEmail').value.trim();
+            var password = document.getElementById('signupPassword').value.trim();
+            if (!(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))) {
+                document.getElementById('errorMessage').style.display = 'block';
+                document.getElementById('errorMessage').textContent = 'Please enter a valid e-mail address.';
+                return false;
+            }
+            if (email.includes('proton.me') || email.includes('protonmail')) {
+                document.getElementById('errorMessage').style.display = 'block';
+                document.getElementById('errorMessage').textContent = 'This site does not support proton mail, enter a different mail.';
+                return false;
+            }
+            if (name.length < 3 || name.length > 14 || !(/^[a-zA-Z0-9]+$/.test(name))) {
+                document.getElementById('errorMessage').style.display = 'block';
+                document.getElementById('errorMessage').textContent = 'The username must contain a minimum of 3 characters and a maximum of 14 characters.';
+                return false;
+            }
+            if (['Tusuf', 'Admin'].includes(name)) {
+                document.getElementById('errorMessage').style.display = 'block';
+                document.getElementById('errorMessage').textContent = 'This username is not accepted.';
+                return false;
+            }
+            var existingUser = users.find(function(user) {
+                return user.email === email || user.name === name;
+            });
+            if (existingUser) {
+                document.getElementById('errorMessage').style.display = 'block';
+                document.getElementById('errorMessage').textContent = 'An account with this email or username already exists.';
+                return false;
+            }
+            if (password.length < 8) {
+                document.getElementById('errorMessage').style.display = 'block';
+                document.getElementById('errorMessage').textContent = 'Password must be at least 8 characters long.';
+                return false;
+            }
+            users.push({ name: name, email: email, password: password });
+            localStorage.setItem('users', JSON.stringify(users));
+         
             return true;
         }
     </script>
