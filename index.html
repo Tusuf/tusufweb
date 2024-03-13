@@ -10,6 +10,7 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            background-color: #f1f1f1;
         }
         header {
             background-color: #333;
@@ -17,16 +18,45 @@
             padding: 20px;
             text-align: center;
         }
+        nav ul {
+            padding: 0;
+            list-style-type: none;
+        }
+        nav ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        nav ul li a:hover {
+            color: #888;
+        }
+        .auth-buttons {
+            float: right;
+            margin-top: 10px;
+        }
         .container {
             max-width: 800px;
             margin: 20px auto;
-            padding: 0 20px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .container.active {
+            display: block;
         }
         .file {
             margin-bottom: 20px;
             background-color: #f9f9f9;
             border-radius: 5px;
             padding: 20px;
+            animation: fadeIn 0.5s ease-in-out;
         }
         .file h2 {
             margin-top: 0;
@@ -49,7 +79,6 @@
         }
         .info {
             display: none;
-            animation: fadeIn 0.5s ease-in-out;
         }
         .info-show {
             animation: fadeOut 0.5s ease-in-out;
@@ -62,96 +91,118 @@
             0% { opacity: 1; transform: translateY(0); }
             100% { opacity: 0; transform: translateY(-20px); }
         }
+        .error-message {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
     <header>
         <h1>TusufsWeb</h1>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#applications">Applications</a></li>
+            </ul>
+            <div class="auth-buttons">
+                <button onclick="showForm('login');">Login</button>
+                <button onclick="showForm('signup');">Sign up</button>
+            </div>
+        </nav>
     </header>
-    <div class="container">
+    <div class="container active" id="home">
+        <h2>Welcome to TusufsWeb!</h2>
+        <div id="updates">
+            <h3>Updates</h3>
+            <ul>
+                <li>
+                    <strong>March 10, 2024:</strong> Added new feature X.
+                </li>
+                <li>
+                    <strong>March 5, 2024:</strong> Fixed issue Y.
+                </li>
+                <!-- Diğer güncelleme loglarını buraya ekleyin -->
+            </ul>
+        </div>
+    </div>
+    <div class="container" id="applications">
+        <h2>Applications</h2>
         <div class="file">
-            <h2>i93s.exe</h2>
-            <p>A MALWARE that deletes important system files, then replicates itself and wipes the C:/ drive. DO NOT open this software on your real computer (VMware, Virtualbox, Hyper-V recommended). The producer is not responsible for any damage caused by i93s.exe.</p>
+            <h2>File 1</h2>
+            <p>Description of File 1</p>
             <button class="info-btn">Info</button>
             <div class="info">
-                <p>Information about this file:</p>
+                <p>Information about File 1:</p>
                 <ul>
-                    <li>System requirements: Windows Vista and higher</li>
-                    <li>Release date: Sunday, March 10, 2024</li>
+                    <li>System requirements: Windows 10</li>
+                    <li>Release date: February 28, 2024</li>
                     <!-- Other information can be added here -->
                 </ul>
             </div>
             <a href="#" download>Download</a>
         </div>
-        <!-- Other files can be added here -->
+        <div class="file">
+            <h2>File 2</h2>
+            <p>Description of File 2</p>
+            <button class="info-btn">Info</button>
+            <div class="info">
+                <p>Information about File 2:</p>
+                <ul>
+                    <li>System requirements: macOS 11</li>
+                    <li>Release date: March 5, 2024</li>
+                    <!-- Other information can be added here -->
+                </ul>
+            </div>
+            <a href="#" download>Download</a>
+        </div>
+    </div>
+    <div class="container" id="login">
+        <h2>Login</h2>
+        <form onsubmit="return validateLogin()">
+            <label for="email">Email:</label><br>
+            <input type="text" id="loginEmail" name="email"><br><br>
+            <label for="password">Password:</label><br>
+            <input type="password" id="loginPassword" name="password"><br><br>
+            <button type="submit">Login</button>
+            <div id="loginErrorMessage" class="error-message" style="display: none;"></div>
+        </form>
+    </div>
+    <div class="container" id="signup">
+        <h2>Sign Up</h2>
+        <form onsubmit="return validateSignup()">
+            <label for="name">Name:</label><br>
+            <input type="text" id="signupName" name="name"><br><br>
+            <label for="email">Email:</label><br>
+            <input type="text" id="signupEmail" name="email"><br><br>
+            <label for="password">Password:</label><br>
+            <input type="password" id="signupPassword" name="password"><br><br>
+            <button type="submit">Sign up</button>
+            <div id="signupErrorMessage" class="error-message" style="display: none;"></div>
+        </form>
     </div>
 
     <script>
         // JavaScript
-        document.querySelectorAll('.info-btn').forEach(function(button) {
-            button.addEventListener('click', function() {
-                var info = this.parentElement.querySelector('.info');
-                if (info.style.display === 'none') {
-                    info.style.display = 'block';
-                } else {
-                    info.classList.add('info-show');
-                    setTimeout(function() {
-                        info.style.display = 'none';
-                        info.classList.remove('info-show');
-                    }, 500); // 500ms duration
-                }
+        function showForm(formId) {
+            var forms = document.querySelectorAll('.container');
+            forms.forEach(function(form) {
+                form.classList.remove('active');
             });
-        });
+            document.getElementById(formId).classList.add('active');
+        }
+
+        function validateLogin() {
+            // Validation logic for login form
+            return true;
+        }
+
+        function validateSignup() {
+            // Validation logic for signup form
+            return true;
+        }
     </script>
-</body>
-</html>
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>User Agent and IP Information</title>
-<style>
-   #userInfo {
-      font-size: 12px;
-      text-align: center;
-      margin-top: 20px;
-      animation: fadeIn 2s ease forwards;
-   }
-
-   @keyframes fadeIn {
-      from {
-         opacity: 0;
-         transform: translateY(-20px);
-      }
-      to {
-         opacity: 1;
-         transform: translateY(0);
-      }
-   }
-</style>
-</head>
-<body>
-<footer id="userInfo">
-   <div>User Agent Information: <span id="userAgentText"></span></div>
-   <div>IP Address: <span id="ipAddressText"></span></div>
-</footer>
-
-<script>
-   document.getElementById("userAgentText").innerText = navigator.userAgent;
-
-   // A request is being made to get the user IP address
-   fetch('https://api.ipify.org?format=json')
-      .then(response => response.json())
-      .then(data => {
-         document.getElementById("ipAddressText").innerText = data.ip;
-      })
-      .catch(error => {
-         console.error('IP error:', error);
-         document.getElementById("ipAddressText").innerText = "Error occurred.";
-      });
-</script>
 </body>
 </html>
