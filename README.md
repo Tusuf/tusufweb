@@ -6,5 +6,5 @@
 --------------------
 👩‍💻 The site may crash because it receives constant updates.
 --------------------
-💼 The site collects your browser information only to determine whether your computer supports the software you downloaded, and this information is not shared or sold to third parties.
+💼 This site does not collect any data.
 --------------------
